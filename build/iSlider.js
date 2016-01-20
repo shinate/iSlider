@@ -14,8 +14,8 @@
 
     /**
      * Check in array
-     * @param oElement
-     * @param aSource
+     * @param {*} oElement
+     * @param {Array} aSource
      * @returns {Boolean}
      */
     function inArray(oElement, aSource) {
@@ -24,7 +24,7 @@
 
     /**
      * Check is array
-     * @param o
+     * @param {*} o
      * @returns {Boolean}
      */
     function isArray(o) {
@@ -33,7 +33,7 @@
 
     /**
      * Check is object
-     * @param o
+     * @param {*} o
      * @returns {Boolean}
      */
     function isObject(o) {
@@ -41,7 +41,7 @@
     };
 
     /**
-     * @param {Element} obj
+     * @param {HTML Element} obj
      * @param {String} cls
      * @returns {Array|{index: number, input: string}}
      */
@@ -50,7 +50,7 @@
     }
 
     /**
-     * @param {Element} obj
+     * @param {HTML Element} obj
      * @param {String} cls
      */
     function addClass(obj, cls) {
@@ -60,7 +60,7 @@
     }
 
     /**
-     * @param {Element} obj
+     * @param {HTML Element} obj
      * @param {String} cls
      */
     function removeClass(obj, cls) {
@@ -105,9 +105,9 @@
     /**
      * @constructor
      *
-     * iSlicer([[{Element} container,] {Array} datalist,] {object} options)
+     * iSlicer([[{HTML Element} container,] {Array} datalist,] {Object} options)
      *
-     * @param {Element} container
+     * @param {HTML Element} container
      * @param {Array} datalist
      * @param {Object} options
      *
@@ -147,7 +147,7 @@
 
         /**
          * listener
-         * @type {object}
+         * @type {Object}
          * @private
          */
         this._LSN = {};
@@ -164,9 +164,15 @@
         this._setting();
 
         this.fire('initialize');
+
         this._renderWrapper();
         this._initPlugins();
         this._bindHandler();
+
+        this.fire('initialized');
+
+        // Autoplay mode
+        this._autoPlay();
     };
 
     /**
@@ -174,7 +180,7 @@
      * @type {Array}
      * @protected
      */
-    iSlider.EVENTS = 'initialize slide slideStart slideEnd slideChange slideChanged slideRestore slideRestored reloadData reset destroy'.split(' ');
+    iSlider.EVENTS = 'initialize initialized pluginInitialize pluginInitialized slide slideStart slideEnd slideChange slideChanged slideRestore slideRestored loadData reset destroy'.split(' ');
 
     /**
      * Easing white list
@@ -246,7 +252,7 @@
     /**
      * animation parmas:
      *
-     * @param {Element} dom 图片的外层<li>容器 Img wrapper
+     * @param {HTML Element} dom 图片的外层<li>容器 Img wrapper
      * @param {String} axis 动画方向 animate direction
      * @param {Number} scale 容器宽度 Outer wrapper
      * @param {Number} i <li>容器index Img wrapper's index
@@ -336,7 +342,7 @@
 
         /**
          * dom element wrapping content
-         * @type {Element}
+         * @type {HTML Element}
          * @public
          */
         this.wrap = opts.dom;
@@ -364,14 +370,14 @@
 
         /**
          * Play time gap
-         * @type {number}
+         * @type {Number}
          * @public
          */
         this.duration = opts.duration || 2000;
 
         /**
          * start from initIndex or 0
-         * @type {number}
+         * @type {Number}
          * @public
          */
         this.initIndex = opts.initIndex > 0 && opts.initIndex <= opts.data.length - 1 ? opts.initIndex : 0;
@@ -393,7 +399,7 @@
 
         /**
          * slideIndex
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.slideIndex = this.slideIndex || this.initIndex || 0;
@@ -414,28 +420,28 @@
 
         /**
          * Wrapper width
-         * @type {number}
+         * @type {Number}
          * @private
          */
-        this.width = this.wrap.clientWidth;
+        this.width = typeof opts.width === 'number' ? opts.width : this.wrap.clientWidth;
 
         /**
          * Wrapper height
-         * @type {number}
+         * @type {Number}
          * @private
          */
-        this.height = this.wrap.clientHeight;
+        this.height = typeof opts.height === 'number' ? opts.height : this.wrap.clientHeight;
 
         /**
          * Ratio height:width
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.ratio = this.height / this.width;
 
         /**
          * Scale, size rule
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.scale = this.isVertical ? this.height : this.width;
@@ -463,7 +469,7 @@
 
         /**
          * AutoPlay waitting milsecond to start
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.delay = opts.delay || 0;
@@ -495,7 +501,7 @@
 
         /**
          * Debug mode
-         * @type {function}
+         * @type {Function}
          * @private
          */
         this.log = opts.isDebug ? function () {
@@ -510,7 +516,7 @@
 
         /**
          * animate process time (ms), default: 300ms
-         * @type {number}
+         * @type {Number}
          * @public
          */
         this.animateTime = opts.animateTime != null && opts.animateTime > -1 ? opts.animateTime : 300;
@@ -528,7 +534,7 @@
 
         /**
          * In slide animation
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.inAnimate = 0;
@@ -549,18 +555,17 @@
         })();
 
         /**
+         * Finger recognition range, prevent inadvertently touch
+         * @type {Number}
+         */
+        this.fingerRecognitionRange = opts.fingerRecognitionRange > -1 ? parseInt(opts.fingerRecognitionRange) : 10;
+
+        /**
          * is on Moving
          * @type {Boolean}
          * @private
          */
         this.isMoving = false;
-
-        /**
-         * Whether a sliding action, perhaps more consecutive frames
-         * @type {Boolean}
-         * @private
-         */
-        this.isAnimating = false;
 
         /**
          * Init events
@@ -572,6 +577,15 @@
         // --------------------------------
         // - Register events
         // --------------------------------
+
+        // Callback function when iSlider start initialization (after setting, before render)
+        this.on('initialize', opts.oninitialize, 1);
+
+        // Callback function when iSlider initialized
+        this.on('initialized', opts.oninitialized, 1);
+
+        // Callback function when iSlider plugins initialized
+        this.on('pluginInitialized', opts.onplugininitialized, 1);
 
         // Callback function when your finger is moving
         this.on('slide', opts.onslide, 1);
@@ -599,7 +613,7 @@
         // --------------------------------
 
         /**
-         * @type {object}
+         * @type {Object}
          * @private
          */
         this.pluginConfig = (function () {
@@ -617,9 +631,6 @@
                 return {}
             }
         })();
-
-        // Autoplay mode
-        this.delay ? global.setTimeout(this._autoPlay.bind(this), this.delay) : this._autoPlay();
     };
 
     /**
@@ -638,6 +649,7 @@
                 && plugins[i].apply(this, config[i]);
             }
         }
+        this.fire('pluginInitialized');
     };
 
     /**
@@ -675,7 +687,7 @@
 
     /**
      * Get item type
-     * @param {number} index
+     * @param {Number} index
      * @returns {String}
      * @private
      */
@@ -711,8 +723,8 @@
 
     /**
      * render single item html by idx
-     * @param {HTMLElement} el ..
-     * @param {number} dataIndex  ..
+     * @param {HTML Element} el ..
+     * @param {Number} dataIndex  ..
      * @private
      */
     iSliderPrototype._renderItem = function (el, dataIndex) {
@@ -791,8 +803,6 @@
                 // do nothing
                 break;
         }
-
-        this.fire('renderComplete');
     };
 
     /**
@@ -874,10 +884,11 @@
 
         this._changedStyles();
 
-        if (this.fillSeam)
+        if (this.fillSeam) {
             this.els.forEach(function (el, i) {
                 addClass(el, 'islider-sliding' + (i === 1 ? '-focus' : ''));
             });
+        }
 
         // Preload picture [ may be pic :) ]
         global.setTimeout(function () {
@@ -887,18 +898,22 @@
         // append ul to div#canvas
         if (!this.outer) {
             /**
-             * @type {Element}
+             * @type {HTML Element}
              * @public
              */
             this.outer = outer;
             this.wrap.appendChild(outer);
         }
+
+        this.currentEl = this.els[1];
+
+        this.fire('renderComplete', this.slideIndex, this.currentEl, this);
     };
 
     /**
      * Preload img when slideChange
      * From current index +2, -2 scene
-     * @param {number} dataIndex means which image will be load
+     * @param {Number} dataIndex means which image will be load
      * @private
      */
     iSliderPrototype._preloadImg = function (dataIndex) {
@@ -932,7 +947,6 @@
     iSliderPrototype._watchTransitionEnd = function (time, eventType) {
 
         var self = this;
-        var args = _A(arguments, 1);
         var lsn;
         this.log('Event:', 'watchTransitionEnd::stuck::pile', this.inAnimate);
 
@@ -943,12 +957,12 @@
             self.inAnimate--;
             self.log('Event:', 'watchTransitionEnd::stuck::release', self.inAnimate);
             if (self.inAnimate === 0) {
-                //self.inAnimate = 0;
                 if (eventType === 'slideChanged') {
                     self._changedStyles();
                 }
-                self.fire.apply(self, args);
+                self.fire.call(self, eventType, self.slideIndex, self.currentEl, self);
                 self._renderIntermediateScene();
+                self.play();
             }
             unWatch();
         };
@@ -957,7 +971,6 @@
             self.els.forEach(function translationEndUnwatchEach(el) {
                 el.removeEventListener(iSlider._transitionEndEvent(), handle);
             });
-            self.isAnimating = false;
         }
 
         if (time > 0) {
@@ -1007,7 +1020,7 @@
     /**
      *  Uniformity admin event
      *  Event router
-     *  @param {object} evt event object
+     *  @param {Object} evt event object
      *  @protected
      */
     iSliderPrototype.handleEvent = function (evt) {
@@ -1031,7 +1044,7 @@
                 this.orientationchangeHandler();
                 break;
             case 'focus':
-                this._autoPlay();
+                this.play();
                 break;
             case 'blur':
                 this.pause();
@@ -1044,7 +1057,7 @@
 
     /**
      *  touchstart callback
-     *  @param {object} evt event object
+     *  @param {Object} evt event object
      *  @protected
      */
     iSliderPrototype.startHandler = function (evt) {
@@ -1064,19 +1077,19 @@
         this.fire('slideStart', evt, this);
 
         /**
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.startTime = new Date().getTime();
 
         /**
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.startX = device.hasTouch ? evt.targetTouches[0].pageX : evt.pageX;
 
         /**
-         * @type {number}
+         * @type {Number}
          * @private
          */
         this.startY = device.hasTouch ? evt.targetTouches[0].pageY : evt.pageY;
@@ -1084,7 +1097,7 @@
 
     /**
      *  touchmove callback
-     *  @param {object} evt event object
+     *  @param {Object} evt event object
      *  @protected
      */
     iSliderPrototype.moveHandler = function (evt) {
@@ -1142,6 +1155,7 @@
         var axis = this.axis;
         var boundary = this.scale / 2;
         var endTime = new Date().getTime();
+        var FRR = this.fingerRecognitionRange;
 
         // a quick slide time must under 300ms
         // a quick slide should also slide at least 14 px
@@ -1151,21 +1165,29 @@
         var absReverseOffset = Math.abs(offset[this.reverseAxis]);
 
         function dispatchLink(el) {
-            if (el.tagName === 'A') {
-                if (el.href) {
-                    global.location.href = el.href;
+            if (el != null) {
+                if (el.tagName === 'A') {
+                    if (el.href) {
+                        if (el.getAttribute('target') === '_blank') {
+                            window.open(el.href);
+                        } else {
+                            global.location.href = el.href;
+                        }
+                        return false;
+                    }
+                }
+                else if (el.tagName === 'LI' && el.className.search(/^islider\-/) > -1) {
                     return false;
                 }
-            }
-            else if (el.tagName === 'LI' && el.className.search(/^islider\-/) > -1) {
-                return false;
-            }
-            else {
-                dispatchLink(el.parentNode);
+                else {
+                    dispatchLink(el.parentNode);
+                }
             }
         }
 
         this.log(boundary, offset[axis], absOffset, absReverseOffset, this);
+
+        this.fire('slideEnd', evt, this);
 
         if (offset[axis] >= boundary && absReverseOffset < absOffset) {
             this.slideTo(this.slideIndex - 1);
@@ -1174,19 +1196,18 @@
             this.slideTo(this.slideIndex + 1);
         }
         else {
-            this.slideTo(this.slideIndex);
+            if (Math.abs(this.offset[this.axis]) >= FRR) {
+                this.slideTo(this.slideIndex);
+            }
         }
 
-        // create tap event if offset < 10
-        if (Math.abs(this.offset.X) < 10 && Math.abs(this.offset.Y) < 10 && this.fixPage && evt.target) {
+        // create sim tap event if offset < this.fingerRecognitionRange
+        if (Math.abs(this.offset[this.axis]) < FRR && this.fixPage && evt.target) {
+            evt.preventDefault();
             dispatchLink(evt.target);
         }
 
         this.offset.X = this.offset.Y = 0;
-
-        this._autoPlay();
-
-        this.fire('slideEnd', evt, this);
     };
 
     /**
@@ -1209,18 +1230,21 @@
             this._LSN.resize && global.clearTimeout(this._LSN.resize);
             this._LSN.resize = global.setTimeout(function () {
                 this.reset();
-                this.log('Event: resize');
                 this._LSN.resize && global.clearTimeout(this._LSN.resize);
+                this.log('Event: resize');
             }.bind(this), 500);
         }
     };
 
     /**
      *  slide logical, goto data index
-     *  @param {number} dataIndex the goto index
+     *  @param {Number} dataIndex the goto index
      *  @public
      */
     iSliderPrototype.slideTo = function (dataIndex, opts) {
+        if (this.isAutoplay) {
+            this.pause();
+        }
         if (this.locking) {
             return;
         }
@@ -1294,6 +1318,8 @@
                 step = -1;
             }
 
+            this.currentEl = els[1];
+
             if (Math.abs(n) === 1) {
                 this._renderIntermediateScene();
                 this._renderItem(headEl, idx + n);
@@ -1307,7 +1333,7 @@
             // Disperse ghost in the back
             if (-1 < ['rotate', 'flip'].indexOf(animateType)) {
                 headEl.style.visibility = 'hidden';
-                els[1].style.visibility = 'visible';
+                this.currentEl.style.visibility = 'visible';
             }
 
             // Minus squeeze time
@@ -1320,13 +1346,13 @@
                 els.forEach(function (el) {
                     removeClass(el, 'islider-sliding|islider-sliding-focus');
                 });
-                addClass(els[1], 'islider-sliding-focus');
+                addClass(this.currentEl, 'islider-sliding-focus');
                 addClass(headEl, 'islider-sliding');
             }
         }
 
-        this.fire(eventType, this.slideIndex, els[1], this);
-        this._watchTransitionEnd(squeezeTime, eventType + 'd', this.slideIndex, els[1], this);
+        this.fire(eventType, this.slideIndex, this.currentEl, this);
+        this._watchTransitionEnd(squeezeTime, eventType + 'd');
 
         // do the trick animation
         for (var i = 0; i < 3; i++) {
@@ -1337,11 +1363,6 @@
             animateFunc.call(this, els[i], this.axis, this.scale, i, 0);
 
             this.fillSeam && this.seamScale(els[i]);
-        }
-
-        // If not looping, stop playing when meet the end of data
-        if (this.isAutoplay && !this.isLooping && this.slideIndex === data.length - 1) {
-            this.pause();
         }
     };
 
@@ -1364,7 +1385,7 @@
     /**
      * Register plugin (run time mode)
      * @param {String} name
-     * @param {function} plugin
+     * @param {Function} plugin
      * @param {...}
      * @public
      */
@@ -1392,7 +1413,7 @@
      *  simple event delegate method
      *  @param {String} evtType event name
      *  @param {String} selector the simple css selector like jQuery
-     *  @param {function} callback event callback
+     *  @param {Function} callback event callback
      *  @public
      */
     iSliderPrototype.bind = iSliderPrototype.delegate = function (evtType, selector, callback) {
@@ -1428,7 +1449,7 @@
      *
      * @param {String} evtType event name
      * @param {String} selector the simple css selector like jQuery
-     * @param {function} callback event callback
+     * @param {Function} callback event callback
      * @public
      */
     iSliderPrototype.unbind = iSliderPrototype.unDelegate = function (evtType, selector, callback) {
@@ -1493,7 +1514,7 @@
     /**
      * Register event callback
      * @param {String} eventName
-     * @param {function} func
+     * @param {Function} func
      * @public
      */
     iSliderPrototype.on = function (eventName, func, force) {
@@ -1509,28 +1530,30 @@
 
     /**
      * Find callback function position
-     * @param eventName
-     * @param func
-     * @returns {number}
+     * @param {String} eventName
+     * @param {Function} func
+     * @returns {Boolean}
      * @public
      */
     iSliderPrototype.has = function (eventName, func) {
         if (eventName in this.events) {
-            return this.events[eventName].indexOf(func);
+            return -1 < this.events[eventName].indexOf(func);
         }
-        return -1;
+        return false;
     };
 
     /**
      * Remove event callback
      * @param {String} eventName
-     * @param {function} func
+     * @param {Function} func
      * @public
      */
     iSliderPrototype.off = function (eventName, func) {
-        var index = this.has(eventName, func);
-        if (index > -1) {
-            delete this.events[eventName][index];
+        if (eventName in this.events) {
+            var index = this.events[eventName].indexOf(func);
+            if (index > -1) {
+                delete this.events[eventName][index];
+            }
         }
     };
 
@@ -1540,16 +1563,19 @@
      * @param {*} args
      * @public
      */
-    iSliderPrototype.fire = function (eventName) {
-        this.log('[EVENT FIRE]:', eventName, arguments);
-        if (eventName in this.events) {
-            var funcs = this.events[eventName];
-            for (var i = 0; i < funcs.length; i++) {
-                typeof funcs[i] === 'function'
-                && funcs[i].apply
-                && funcs[i].apply(this, _A(arguments, 1));
+    iSliderPrototype.fire = function (eventNames) {
+        var args = _A(arguments, 1);
+        eventNames.split(/\x20+/).forEach(function (eventName) {
+            this.log('[EVENT FIRE]:', eventName, args);
+            if (eventName in this.events) {
+                var funcs = this.events[eventName];
+                for (var i = 0; i < funcs.length; i++) {
+                    typeof funcs[i] === 'function'
+                    && funcs[i].apply
+                    && funcs[i].apply(this, args);
+                }
             }
-        }
+        }.bind(this));
     };
 
     /**
@@ -1558,9 +1584,14 @@
      */
     iSliderPrototype.reset = function () {
         this.pause();
-        this._setting();
+        //this._setting();
+        this.width = typeof this._opts.width === 'number' ? this._opts.width : this.wrap.clientWidth;
+        this.height = typeof this._opts.height === 'number' ? this._opts.height : this.wrap.clientHeight;
+        this.ratio = this.height / this.width;
+        this.scale = this.isVertical ? this.height : this.width;
         this._renderWrapper();
-        this.delay && global.setTimeout(this._autoPlay.bind(this), this.delay);
+        this._autoPlay();
+        this.fire('reset slideRestored', this.slideIndex, this.currentEl, this);
     };
 
     /**
@@ -1572,8 +1603,8 @@
         this.slideIndex = initIndex || 0;
         this.data = data;
         this._renderWrapper();
-        this.fire('reloadData');
-        this.delay && global.setTimeout(this._autoPlay.bind(this), this.delay);
+        this._autoPlay();
+        this.fire('loadData slideChanged', this.slideIndex, this.currentEl, this);
     };
 
     /**
@@ -1581,15 +1612,7 @@
      * @private
      */
     iSliderPrototype._autoPlay = function () {
-        // enable
-        if (this.isAutoplay) {
-            this.has('slideChanged', this.play) < 0 && this.on('slideChanged', this.play, 1);
-            this.has('slideRestored', this.play) < 0 && this.on('slideRestored', this.play, 1);
-            this.play();
-        } else {
-            this.off('slideChanged', this.play);
-            this.off('slideRestored', this.play);
-        }
+        this.delay > 0 ? global.setTimeout(this.play.bind(this), this.delay) : this.play();
     };
 
     /**
@@ -1597,8 +1620,11 @@
      * @public
      */
     iSliderPrototype.play = function () {
-        this._LSN.autoPlay && global.clearTimeout(this._LSN.autoPlay);
-        this._LSN.autoPlay = global.setTimeout(this.slideNext.bind(this), this.duration);
+        this.pause();
+        // If not looping, stop playing when meet the end of data
+        if (this.isAutoplay && (this.isLooping || this.slideIndex < this.data.length - 1)) {
+            this._LSN.autoPlay = global.setTimeout(this.slideNext.bind(this), this.duration);
+        }
     };
 
     /**
@@ -1647,6 +1673,10 @@
         this.locking = false;
     };
 
+    /**
+     * Fill the seam
+     * @param {HTML Element} el
+     */
     iSliderPrototype.seamScale = function (el) {
         var regex = /scale([XY]?)\(([^\)]+)\)/;
         if (regex.test(el.style.webkitTransform)) {
@@ -1672,6 +1702,10 @@
         }
     };
 
+    /**
+     *
+     * @param {HTML Element} el
+     */
     iSliderPrototype.originScale = function (el) {
         var regex = /([\x20]?scale)([XY]?)\(([^\)]+)\)/;
         el.style.webkitTransform = el.style.webkitTransform.replace(regex, function (sc, res, axis, scale) {

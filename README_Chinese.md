@@ -1,6 +1,6 @@
 # iSlider
 
-![](thumbnails/iSlider-logo.png)
+![](http://be-fe.github.io/iSlider/thumbnails/iSlider-logo.png)
 
 #### [iSlider English README](https://github.com/BE-FE/iSlider/blob/master/README.md)
 #### [iSlider DEMO](http://be-fe.github.io/iSlider/demo/index.html)
@@ -21,7 +21,7 @@ iSlider是一个轻量且高性能，无任何库依赖的跨平台滑动控件�
 
 ## 移动端展示
 
-![](thumbnails/qrcode.png)
+![](http://be-fe.github.io/iSlider/thumbnails/qrcode.png)
 
 Demo [http://be-fe.github.io/iSlider/index.html](http://be-fe.github.io/iSlider/index.html)
 
@@ -184,7 +184,7 @@ var data = [{
     </tr>
     <tr>
         <td>data</td>
-        <td>{array}</td>
+        <td>{Array}</td>
         <td>
             数据列表:
             <br>
@@ -206,67 +206,72 @@ var data = [{
     </tr>
     <tr>
         <td>duration</td>
-        <td>{number}</td>
+        <td>{Number}</td>
         <td>单位:毫秒，在自动播放模式中，设置每个场景的停留时间</td>
     </tr>
     <tr>
         <td>animateType</td>
-        <td>{string}</td>
+        <td>{String}</td>
         <td>动画效果，目前支持默认default, rotate, depth, flow, flip and card</td>
     </tr>
     <tr>
         <td>animateTime</td>
-        <td>{number}</td>
+        <td>{Number}</td>
         <td>单位:毫秒，动画效果持续时间</td>
     </tr>
     <tr>
         <td>animateEasing</td>
-        <td>{string}</td>
+        <td>{String}</td>
         <td>动画效果曲线，支持linear, ease, ease-in, ease-out, ease-in-out以及自定义的cubic-bezier曲线</td>
     </tr>
     <tr>
         <td>isDebug</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>开启/关闭调试模式，会打印更多日志信息，默认:false (关闭)</td>
     </tr>
     <tr>
         <td>isLooping</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>开启/关闭循环模式，默认:false (关闭)</td>
     </tr>
     <tr>
         <td>isAutoplay</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>开启/关闭自动滑动模式，默认:false (关闭)</td>
     </tr>
     <tr>
         <td>isVertical</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>开启水平/垂直滑动模式，默认:false (关闭)</td>
     </tr>
     <tr>
         <td>isOverspread</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>如果场景为图片模式，是否平铺整个浏览器屏幕(CSS3背景)，默认:false (关闭)</td>
     </tr>
     <tr>
+        <td>isTouchable</td>
+        <td>{Boolean}</td>
+        <td>开启/关闭触屏事件. 默认: true (开启)</td>
+    </tr>
+    <tr>
         <td>initIndex</td>
-        <td>{number}</td>
+        <td>{Number}</td>
         <td>默认首屏所使用的数据列表索引</td>
     </tr>
     <tr>
         <td>fixPage</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>是否禁用垂直滚动和回弹效果，默认:true (开启)</td>
     </tr>
     <tr>
         <td>fillSeam</td>
-        <td>{boolean}</td>
+        <td>{Boolean}</td>
         <td>填补场景间的接缝. Default: false (关闭)</td>
     </tr>
     <tr>
         <td>plugins</td>
-        <td>{array}</td>
+        <td>{Array}</td>
         <td>
             启用插件，可为插件名称列表：
             <pre>['dot', 'button', 'zoompic', ...]</pre>
@@ -280,38 +285,48 @@ var data = [{
         </td>
     </tr>
     <tr>
+        <td>initialize</td>
+        <td>{Function}</td>
+        <td>开始初始化时的回调函数（在调用setting后，渲染之前）</td>
+    </tr>
+    <tr>
+        <td>initialized</td>
+        <td>{Function}</td>
+        <td>完成初始化时的回调函数（渲染之后）</td>
+    </tr>
+    <tr>
         <td>onslide</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>手指滑动时的回调函数</td>
     </tr>
     <tr>
         <td>onslidestart</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>手指触屏时的回调函数</td>
     </tr>
     <tr>
         <td>onslideend</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>手指离开屏幕时的回调函数</td>
     </tr>
     <tr>
         <td>onslidechange</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>当场景发生改变时触发的回调函数</td>
     </tr>
     <tr>
         <td>onslidechanged</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>当场景改变完成(动画完成)时触发的回调函数</td>
     </tr>
     <tr>
         <td>onsliderestore</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>当场景未发生变化时触发的回调函数</td>
     </tr>
     <tr>
         <td>onsliderestored</td>
-        <td>{function}</td>
+        <td>{Function}</td>
         <td>当场景未发生变化完成(回弹动画完成)时触发的回调函数</td>
     </tr>
 </tbody>
@@ -338,9 +353,9 @@ var data = [{
             extend
         </td>
         <td>
-            [{object} 原对象(可选)]
+            [{Object} 原对象(可选)]
             <br>
-            {object} 新对象
+            {Object} 新对象
         </td>
         <td>
             当参数长度为1时，将参数对象继承到iSlider.prototype
@@ -353,9 +368,9 @@ var data = [{
             regPlugin
         </td>
         <td>
-            {string} 插件名称
+            {String} 插件名称
             <br>
-            {function} 插件初始化方法
+            {Function} 插件初始化方法
         </td>
         <td>
             注册插件
@@ -371,9 +386,9 @@ var data = [{
             slideTo
         </td>
         <td>
-            {number} 数据列表索引
+            {Number} 数据列表索引
             <br>
-            [{object} 临时配置(可选)]
+            [{Object} 临时配置(可选)]
         </td>
         <td>
             滚动到第n个场景，可以在第二个参数设置配置信息，改变本次滑动的动画效果: animateTime animateType
@@ -384,7 +399,7 @@ var data = [{
             slideNext
         </td>
         <td>
-            [{object} 临时配置(可选)]
+            [{Object} 临时配置(可选)]
         </td>
         <td>
             滚动到后一场景，可以设置配置信息，改变本次滑动的动画效果: animateTime animateType
@@ -395,7 +410,7 @@ var data = [{
             slidePrev
         </td>
         <td>
-            [{object} 临时配置(可选)]
+            [{Object} 临时配置(可选)]
         </td>
         <td>
             滚动到前一场景，可以设置配置信息，改变本次滑动的动画效果: animateTime animateType
@@ -406,11 +421,11 @@ var data = [{
             delegate
         </td>
         <td>
-            {string} 事件名称
+            {String} 事件名称
             <br>
-            {string} 选择器 (querySelectorAll)
+            {String} 选择器 (querySelectorAll)
             <br>
-            {function} 事件响应方法
+            {Function} 事件响应方法
         </td>
         <td>
             在容器node上绑定代理事件
@@ -430,11 +445,11 @@ var data = [{
             unDelegate
         </td>
         <td>
-            {string} 事件名称
+            {String} 事件名称
             <br>
-            {string} 选择器 (querySelectorAll)
+            {String} 选择器 (querySelectorAll)
             <br>
-            {function} 事件响应方法
+            {Function} 事件响应方法
         </td>
         <td>
             解绑事件句柄
@@ -454,14 +469,20 @@ var data = [{
             on
         </td>
         <td>
-            {string} 事件
+            {String} 事件
             <br>
-            {function} 回掉方法
+            {Function} 回掉方法
         </td>
         <td>
             在iSlider的事件中注册回掉方法
             <br>
             <ul>
+                <li>
+                    initialize
+                </li>
+                <li>
+                    initialized
+                </li>
                 <li>
                     slide
                 </li>
@@ -497,9 +518,9 @@ var data = [{
             off
         </td>
         <td>
-            {string} 事件
+            {String} 事件
             <br>
-            {function} 回掉方法
+            {Function} 回掉方法
         </td>
         <td>
             从iSlider的事件中移除回掉方法
@@ -557,7 +578,7 @@ var data = [{
             loadData
         </td>
         <td>
-            {array} 数据列表
+            {Array} 数据列表
         </td>
         <td>
             载入数据列表
