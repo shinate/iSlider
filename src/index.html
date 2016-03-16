@@ -81,56 +81,76 @@
 <script src="js/plugins/zoompic.js"></script>
 <script src="js/plugins/BIZone.js"></script>
 <script>
+
+    function addOne() {
+        islider.data.push({content: createData()});
+    }
+
+    var st = 0;
+
+    function createData() {
+        return '' +
+                '<div style="font-size:2em;color:white;text-align: center">' +
+                '<span x="ooxx">' + (st++) + '</span>' +
+                '</div>';
+    }
+
     var list = [];
 
     //    list.push({
     //        content: '../thumbnails/iSlider-logo.png'
     //    });
 
-    list.push({
-        content: '' +
-        '<div style="font-size:2em;color:white;text-align: center">' +
-        '<span x="ooxx">HTML(<em>For test</em>)</span>' +
-        '<a href="http://baidu.com">Link</a>' +
-        '</div>'
-    });
+    list.push({content: createData()});
+    list.push({content: createData()});
+    list.push({content: createData()});
+    list.push({content: createData()});
+    list.push({content: createData() + '<button style="position: absolute;left: 0;;top: 0;" onclick="addOne()">Add 1 Scene</button>'});
 
-    list.push({
-        content: (function () {
-            var dom = document.createElement('div');
-            dom.innerHTML = 'Element';
-            dom.style.cssText = 'font-size:2em;color:rgb(230, 230, 63);';
-            return dom;
-        })()
-    });
-
-    list.push({
-        content: (function () {
-            var frag = document.createDocumentFragment();
-            var dom = document.createElement('div');
-            dom.innerHTML = 'Fragment';
-            dom.style.cssText = 'font-size:2em;color:rgb(230, 63, 230);';
-            frag.appendChild(dom);
-            return frag;
-        })()
-    });
-
-    list.push({
-        content: document.getElementById('pages')
-    });
-
-    for (var i = 0; i < 3; i++)
-        list.push({
-            content: '<div data-active="true" class="ro">' + i + '</div>'
-        });
-
-    list.push({
-        content: '<input type="text" />'
-    });
-
-    list.push({
-        content: '<select><option>1</option><option>2</option></select>'
-    });
+    //    list.push({
+    //        content: '' +
+    //        '<div style="font-size:2em;color:white;text-align: center">' +
+    //        '<span x="ooxx">HTML(<em>For test</em>)</span>' +
+    //        '<a href="http://baidu.com">Link</a>' +
+    //        '</div>'
+    //    });
+    //
+    //    list.push({
+    //        content: (function () {
+    //            var dom = document.createElement('div');
+    //            dom.innerHTML = 'Element';
+    //            dom.style.cssText = 'font-size:2em;color:rgb(230, 230, 63);';
+    //            return dom;
+    //        })()
+    //    });
+    //
+    //    list.push({
+    //        content: (function () {
+    //            var frag = document.createDocumentFragment();
+    //            var dom = document.createElement('div');
+    //            dom.innerHTML = 'Fragment';
+    //            dom.style.cssText = 'font-size:2em;color:rgb(230, 63, 230);';
+    //            frag.appendChild(dom);
+    //            return frag;
+    //        })()
+    //    });
+    //
+    //    list.push({
+    //        content: document.getElementById('pages')
+    //    });
+    //
+    //    for (var i = 0; i < 3; i++)
+    //        list.push({
+    //            content: '<div data-active="true" class="ro">' + i + '</div>'
+    //        });
+    //
+    //    list.push({
+    //        content: '<input type="text" />'
+    //    });
+    //
+    //    list.push({
+    //        content: '<select><option>1</option><option>2</option></select>'
+    //    });
     //
     //    list.push({
     //        content: '<input type="text" />'
@@ -145,9 +165,9 @@
 //                data: list,
                 dom: document.getElementById("iSlider-wrapper"),
 //                isVertical: 1,
-                isLooping: 1,
+//                isLooping: 1,
 //                isOverspread: 1,
-                animateType: 'rotate',
+//                animateType: 'rotate',
 //                delay: 3000,
                 animateTime: 1000,
 //                fillSeam: 1,
@@ -171,9 +191,12 @@
                 _: null
             });
 
-    //    islider.on('slideChange', function () {
-    //        console.debug('Change event from method "on"', this, arguments);
-    //    });
+    islider.on('slideChange', function (i) {
+        if (this.data.length - 1 === i) {
+
+        }
+        //this.data.push(createData());
+    });
     //
     //    islider.on('slideChanged', function () {
     //        console.debug('Change(d) event from method "on"', this, arguments);
