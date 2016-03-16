@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
     <title>S.W.O.P</title>
-    <link href="./style/iSlider.css" rel="stylesheet">
+    <link href="./public/css/iSlider.css" rel="stylesheet">
     <style>
         body, html {
             padding: 0;
@@ -45,9 +45,9 @@
 <body>
 <div class="fork" id="S"></div>
 <div class="fork" id="N"></div>
-<script type="text/javascript" src="./js/iSlider.js"></script>
-<script type="text/javascript" src="./js/ext/animate.js"></script>
-<script>
+<script type="text/javascript" src="./public/js/iSlider.js"></script>
+<script type="text/javascript" src="./public/js/iSlider.animate.js"></script>
+<script id="show-code">
     var $S = new iSlider(document.getElementById('S'), [
         {
             content: 'This is the first scene',
@@ -90,20 +90,7 @@
         isTouchable: false
     });
 
-    $N.animateTime = $S.animateTime;
-    $N.isLooping = $S.isLooping;
-
-    $S.on('slideStart', function (evt) {
-        $N.startHandler(evt);
-    });
-
-    $S.on('slide', function (evt) {
-        $N.moveHandler(evt);
-    });
-
-    $S.on('slideEnd', function (evt) {
-        $N.endHandler(evt);
-    });
+    $N.subjectTo($S);
 
     window.addEventListener('keydown', function (evt) {
         switch (evt.keyCode) {
@@ -113,21 +100,6 @@
             case 39:
                 $S.slideNext();
                 break;
-        }
-    });
-
-    $S.on('slideChange', function (i) {
-        var l = this.data.length, d = this.direction;
-        if (d > 0 && (i - $N.slideIndex + l) % l === 1) {
-            $N.slideNext();
-        } else if (d < 0 && (i - $N.slideIndex - l) % l === -1) {
-            $N.slidePrev();
-        }
-    });
-
-    $S.on('slideRestore', function (i) {
-        if ($N.slideIndex !== i) {
-            $N.slideTo(i);
         }
     });
 </script>
