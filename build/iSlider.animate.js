@@ -31,26 +31,12 @@
 
                 if (this.isVertical) {
                     offset = -offset;
-                    if (Math.abs(direct) > 1) {
-                        direct = -direct;
-                    }
-                }
-
-                iSlider.setStyle(this.wrap, 'perspective', scale * 4);
-
-                dom.style.visibility = 'visible';
-                if (direct > 0 && i === 2) {
-                    dom.style.visibility = 'hidden';
-                }
-                if (direct < 0 && i === 0) {
-                    dom.style.visibility = 'hidden';
                 }
                 dom.style.zIndex = i === 1 ? 1 : 0;
-
-                dom.style.cssText += iSlider.styleProp('backface-visibility') + ':hidden;' + iSlider.styleProp('transform-style') + ':preserve-3d;' + 'position:absolute;';
+                dom.style.cssText += iSlider.styleProp('transform-style') + ':preserve-3d;' + iSlider.styleProp('backface-visibility') + ':hidden;' + 'position:absolute;';
 
                 // TODO: overflow... I dont understand why there are many differences between ios and desktop. Maybe they have different interpretations of Perspective
-                iSlider.setStyle(dom, 'transform', 'rotate' + rotateDirect + '(' + 90 * (offset / scale + i - 1) + 'deg) translateZ(' + (0.889 * scale / 2) + 'px) scale(0.889)');
+                iSlider.setStyle(dom, 'transform', 'perspective(' + (scale * 4) + 'px)' + ' rotate' + rotateDirect + '(' + 90 * (offset / scale + i - 1) + 'deg) translateZ(' + (0.889 * scale / 2) + 'px) scale(0.889)');
             }
 
             rotate.effect = iSlider.styleProp('transform');
@@ -63,19 +49,8 @@
                 if (this.isVertical) {
                     offset = -offset;
                 }
-
-                iSlider.setStyle(this.wrap, 'perspective', scale * 4);
-
-                dom.style.visibility = 'visible';
-                if (direct > 0 && i === 2) {
-                    dom.style.visibility = 'hidden';
-                }
-                if (direct < 0 && i === 0) {
-                    dom.style.visibility = 'hidden';
-                }
-
-                dom.style.cssText += 'position:absolute;' + iSlider.styleProp('backface-visibility') + ':hidden';
-                iSlider.setStyle(dom, 'transform', 'translateZ(' + (scale / 2) + 'px) rotate' + ((axis === 'X') ? 'Y' : 'X') + '(' + 180 * (offset / scale + i - 1) + 'deg) scale(0.875)');
+                dom.style.cssText += iSlider.styleProp('transform-style') + ':preserve-3d;' + 'position:absolute;' + iSlider.styleProp('backface-visibility') + ':hidden';
+                iSlider.setStyle(dom, 'transform', 'perspective(' + (scale * 4) + 'px)' + ' translateZ(' + (scale / 2) + 'px) rotate' + ((axis === 'X') ? 'Y' : 'X') + '(' + 180 * (offset / scale + i - 1) + 'deg) scale(0.875)');
             }
 
             flip.effect = iSlider.styleProp('transform');
@@ -83,12 +58,10 @@
             return flip;
         })(),
         depth: (function () {
-
             function depth(dom, axis, scale, i, offset, direct) {
                 var zoomScale = (4 - Math.abs(i - 1)) * 0.18;
-                iSlider.setStyle(this.wrap, 'perspective', scale * 4);
                 dom.style.zIndex = i === 1 ? 1 : 0;
-                iSlider.setStyle(dom, 'transform', 'scale(' + zoomScale + ') translateZ(0) translate' + axis + '(' + (offset + 1.3 * scale * (i - 1)) + 'px)');
+                iSlider.setStyle(dom, 'transform', 'perspective(' + (scale * 4) + 'px)' + 'scale(' + zoomScale + ') translateZ(0) translate' + axis + '(' + (offset + 1.3 * scale * (i - 1)) + 'px)');
             }
 
             depth.effect = iSlider.styleProp('transform');
@@ -101,8 +74,6 @@
                 var directAmend = (axis === 'X') ? 1 : -1;
                 var offsetRatio = Math.abs(offset / scale);
 
-                iSlider.setStyle(this.wrap, 'perspective', scale * 4);
-
                 if (i === 1) {
                     dom.style.zIndex = scale - absoluteOffset;
                 }
@@ -110,7 +81,7 @@
                     dom.style.zIndex = (offset > 0) ? (1 - i) * absoluteOffset : (i - 1) * absoluteOffset;
                 }
 
-                iSlider.setStyle(dom, 'transform', 'scale(0.7, 0.7) translateZ(' + (offsetRatio * 150 - 150) * Math.abs(i - 1) + 'px)' + 'translate' + axis + '(' + (offset + scale * (i - 1)) + 'px)' + 'rotate' + rotateDirect + '(' + directAmend * (30 - offsetRatio * 30) * (1 - i) + 'deg)');
+                iSlider.setStyle(dom, 'transform', 'perspective(' + (scale * 4) + 'px)' + 'scale(0.7, 0.7) translateZ(' + (offsetRatio * 150 - 150) * Math.abs(i - 1) + 'px)' + 'translate' + axis + '(' + (offset + scale * (i - 1)) + 'px)' + 'rotate' + rotateDirect + '(' + directAmend * (30 - offsetRatio * 30) * (1 - i) + 'deg)');
             }
 
             flow.effect = iSlider.styleProp('transform');
