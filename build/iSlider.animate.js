@@ -24,6 +24,7 @@
     'use strict';
 
     iSlider && iSlider.extend(iSlider._animateFuncs, {
+
         // rotate
         rotate: (function () {
             function rotate(dom, axis, scale, i, offset, direct) {
@@ -43,6 +44,7 @@
             rotate.reverse = true;
             return rotate;
         })(),
+
         // flip
         flip: (function () {
             function flip(dom, axis, scale, i, offset, direct) {
@@ -57,6 +59,8 @@
             flip.reverse = true;
             return flip;
         })(),
+
+        // depth
         depth: (function () {
             function depth(dom, axis, scale, i, offset, direct) {
                 var zoomScale = (4 - Math.abs(i - 1)) * 0.18;
@@ -67,6 +71,8 @@
             depth.effect = iSlider.styleProp('transform');
             return depth;
         })(),
+
+        // flow
         flow: (function () {
             function flow(dom, axis, scale, i, offset, direct) {
                 var absoluteOffset = Math.abs(offset);
@@ -87,6 +93,8 @@
             flow.effect = iSlider.styleProp('transform');
             return flow;
         })(),
+
+        // card
         card: (function () {
             function card(dom, axis, scale, i, offset, direct) {
                 var absoluteOffset = Math.abs(offset);
@@ -113,6 +121,8 @@
             card.effect = iSlider.styleProp('transform');
             return card;
         })(),
+
+        // fade
         fade: (function () {
             function fade(dom, axis, scale, i, offset, direct) {
                 dom.style.zIndex = i === 1 ? 1 : 0;
@@ -127,6 +137,8 @@
             fade.effect = 'opacity';
             return fade;
         })(),
+
+        // zoomout
         zoomout: (function () {
             var lsn;
 
